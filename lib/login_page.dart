@@ -1,3 +1,4 @@
+import 'package:check_project/utili/routes.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -49,11 +50,13 @@ class _LoginPageState extends State<LoginPage> {
                height:20,
              ),
              InkWell(
-               onTap:(){
-             // Navigator.pushNamed(context, MyRoutes.homeRoute);
+               onTap:() async{
+
                  setState(() {
                    changeButton=true;
                  });
+                 await Future.delayed(Duration(seconds:1));
+                 Navigator.pushNamed(context, MyRoutes.homeRoute);
              },
                child: AnimatedContainer(
                  duration: Duration(seconds: 1),
