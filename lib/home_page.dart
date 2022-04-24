@@ -1,11 +1,15 @@
-import 'dart:developer';
 
-import 'package:check_project/drawar.dart';
-import 'package:check_project/item_Widget.dart';
+import 'package:check_project/catalog_header.dart';
 import 'package:check_project/moddels/catalog.dart';
+import 'package:check_project/theme.dart';
+import 'package:check_project/utili/routes.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
+import 'package:velocity_x/velocity_x.dart';
+import 'catalog_list.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -29,7 +33,7 @@ class _HomePageState extends State<HomePage> {
     CatalogModel.items = List.from(productsData)
         .map<Item>((item) => Item.fromMap(item))
         .toList();
-    log("size is: ${CatalogModel.items.length}");
+    // log("size is: ${CatalogModel.items.length}");
 
     setState(() {});
   }
@@ -37,51 +41,34 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Catalog App"),
+      backgroundColor: MyTheme.creamColor,
+      floatingActionButton: FloatingActionButton(
+        onPressed: ()=>Navigator.pushNamed(context,MyRoutes.cartRoute),
+        backgroundColor: MyTheme.darkBluishColor,
+        child: Icon(CupertinoIcons.cart),
       ),
-      // ),
-      body: Padding(
-          padding: const EdgeInsets.all(16.8),
-          child: (CatalogModel.items != null && CatalogModel.items.isNotEmpty)
-              ? GridView.builder(
-            itemCount: CatalogModel.items.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                  ),
-                  itemBuilder: (context, index) {
-                    log("size is: ${CatalogModel.items.length}");
-                    final Item = CatalogModel.items[index];
-                    return Card(
-                      clipBehavior: Clip.antiAlias,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+      body: SafeArea(
+        child: Container(
+          padding: Vx.m32,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CatalogHeader(),
+              if (CatalogModel.items!=null && CatalogModel.items.isNotEmpty) 
+                CatalogList().expand()
+               else
+                 CircularProgressIndicator().centered().expand(),
+              
+            ],
+          ),
+        ),
+      ),
 
-                        child: GridTile(
-                          header: Container(
-                              child: Text(Item.name, style: TextStyle(color: Colors.white),
-                              ),
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(color: Colors.deepPurple),
-                          ),
-                            child: Image.network(Item.image),
-
-                            footer: Container(child: Text(Item.price.toString(),
-                              style: TextStyle(color: Colors.white),
-                            ),
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(color:Colors.black),
-                            ),
-                        )
-                    );
-                  })
-              : Center(
-                  child: CircularProgressIndicator(),
-                )),
-      drawer: MyDrawer(),
     );
   }
 }
+
+
+
+
+
